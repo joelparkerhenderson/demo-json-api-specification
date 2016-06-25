@@ -1,0 +1,170 @@
+// Demo of JSON API Specification
+//
+// See http://jsonapi.org
+//
+// JSON API is a convention for response formatting.
+// JSON API conventions help you increase productivity,
+// take advantage of tooling, and focus on your application.
+//
+// Clients built around JSON API are able to take advantage
+// of its features around efficiently caching responses,
+// and even sometimes eliminating network requests entirely.
+//
+// JSON API has been properly registered with the IANA.
+// Its media type designation is application/vnd.api+json.
+//
+// ## What's the app?
+//
+// This demo is a simple application that manages users and items.
+//
+//   * A user can have many items.
+//   * An item can have many notes.
+//
+// ## Tracking
+//
+// Package: demo_json_api_specification
+// Version: 1.0.0
+// Created: 2016-06-25
+// Updated: 2016-06-25
+// License: Any of BSD, GPL, LGPL, MIT
+// Contact: Joel Parker Henderson (joel@joelparkerhenderson.com)
+//
+{
+
+  // A JSON object MUST be at the root of every JSON API request
+  // that contains data and response that contains data.
+  //
+  // This JSON object defines a document's “top level”.
+  //
+  // A document MUST contain at least one of these top-level members:
+  //
+  //   * `data`: the document's “primary data”
+  //   * `errors`: an array of error objects
+  //   * `meta`: a meta object that contains non-standard meta-information.
+  //
+  // See http://jsonapi.org/format/
+  //
+  // This demo uses the top level `data` object.
+  //
+  // If a request targets a single resources, the `data` MUST be one of:
+  //
+  //   * a single resource object
+  //   * a single resource identifier object
+  //   * null
+  //
+  // If a request targets a resource collection, the `data` MUST be one of:
+  //
+  //   * an array of resource objects
+  //   * an array of resource identifier objects
+  //   * an empty array ([])
+  //
+  "data": [{
+
+    // Typical data will start with a “resource object”.
+    //
+    // This MUST contain at least the following top-level members:
+    //
+    //   * `type`: the resource type, typically a plural word.
+    //   * `id`: the resource id, typically a unique identifier.
+    //
+    // Note: the spec is agnostic about inflection rules, so the value
+    // of type can be either plural or singular. However, the same value
+    // should be used consistently throughout an implementation.
+    //
+    // Exception: The id member is not required when the
+    // resource object originates at the client and represents
+    // a new resource to be created on the server.
+    //
+    "type": "items",
+    "id": "1",
+
+    // A resource object MAY contain any of these top-level members:
+    //
+    //  * `attributes`: represents some of the resource’s data.
+    //  * `relationships`: describes relationships with other resources.
+    //  * `links`: contains links related to the resource.
+    //  * `meta`: contains non-standard meta-information.
+
+    // The "attributes" object has the item's attributes a.k.a. properties
+    // a.k.a. variables a.k.a. settings. This can be a lot of data.
+    //
+    "attributes": {
+      "title": "Hello World"
+    },
+
+    // Relationships may be to-one or to-many.
+    //
+    // A “relationship object” MUST contain at least one of:
+    //
+    //   * `links`: a links object containing `self` or `related`.
+    //   * `data`: resource linkage
+    //   * `meta`: non-standard meta-information about the relationship.
+    //
+    "relationships": {
+      // The relationship names are defined by your application API.
+      // For example our application has a "notes" resource, and each
+      // of our "items" may relate to one or more "notes" resources.
+      "notes": {
+        "links": {
+          // The `links` object contains at least of one:
+          //
+          //   * `self`: a link for the relationship itself. This link allows
+          //      the client to directly manipulate the relationship.
+          //      For example, removing an author through an article’s
+          //      relationship URL would disconnect the person from the
+          //      article without deleting the people resource itself.
+          //   * `related`: a related resource link.
+          //
+          "self": "http://example.com/items/1/relationships/notes",
+          "related": "http://example.com/items/1/notes"
+        },
+        "data": [
+          // Make it easy to fetch relationship resources
+          { "type": "notes", "id": "12345" },
+        ]
+      }
+    },
+    // The optional links member within each resource object
+    // contains links related to the resource.
+    "links": {
+      // The links object MAY contain a "self" link that identifies
+      // the resource represented by the resource object.
+      "self": "http://example.com/items/1"
+      // Example of a pagination link that we call "next",
+      // and that we use with a query string for the next page.
+      // The query depends entirely on your application.
+      "next": "http://example.com/items?page[offset]=2",
+    }
+  }],
+
+  // Compound Documents
+  //
+  // To reduce the number of HTTP requests, servers MAY allow responses
+  // that include related resources along with the requested primary
+  // resources. Such responses are called “compound documents”.
+  //
+  // In a compound document, all included resources MUST be represented
+  // as an array of resource objects in a top-level included member.
+  //
+  // Compound documents require “full linkage”, meaning that every
+  // included resource MUST be identified by at least one resource
+  // identifier object in the same document. These resource identifier
+  // objects could either be primary data or represent resource linkage
+  //  contained within primary or included resources.
+  //
+  // The only exception to the full linkage requirement is when
+  // relationship fields that would otherwise contain linkage data
+  //  are excluded via sparse fieldsets.
+  //
+  "included": [{
+    "type": "notes",
+    "id": "12345",
+    "attributes": {
+      "text": "This is a Hello World note example",
+    },
+    "links": {
+      "self": "http://example.com/notes/12345"
+    }
+  },
+
+}
