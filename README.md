@@ -24,8 +24,8 @@ This demo is a simple application that manages users and items.
 ## Tracking
 
 * Package: demo_json_api_specification
-* Version: 1.0.0
+* Version: 1.1.0
 * Created: 2016-06-25
-* Updated: 2016-06-26
+* Updated: 2016-06-27
 * License: Any of BSD, GPL, LGPL, MIT
 * Contact: Joel Parker Henderson (joel@joelparkerhenderson.com)
