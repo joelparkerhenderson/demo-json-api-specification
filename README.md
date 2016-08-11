@@ -1,5 +1,7 @@
 # Demo JSON API Specification
 
+<img src="README.png" alt="json:api" style="width: 100%;"/>
+
 See http://jsonapi.org
 
 JSON API is a convention for response formatting.
